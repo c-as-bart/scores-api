@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  apache:
+    build: .docker/apache
+    ports:
+      - 8080:80
+    volumes:
+      - .docker/config/vhosts:/etc/apache2/sites-enabled
+      - .:/home/wwwroot
+    depends_on:
+      - php
+  php:
+    build: .docker/php
+    volumes:
+      - .:/home/wwwroot
+    depends_on:
+      - postgres
+    environment:
+      XDEBUG_CONFIG: "remote_host=192.168.1.16"
+      PHP_IDE_CONFIG: "serverName=scores-api"
+
+  postgres:
+    image: postgres:11
+    environment:
+      POSTGRES_DB: "${MAIN_DB_NAME}"
+      POSTGRES_USER: "${MAIN_DB_USER}"
+      POSTGRES_PASSWORD: "${MAIN_DB_PASSWORD}"
+    ports:
+      - "${MAIN_DB_PORT}:5432"
+    volumes:
+      - .docker/data/db:/var/lib/postgresql
+      - .docker/data/db/data:/var/lib/postgresql/data

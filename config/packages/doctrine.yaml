@@ -1,0 +1,17 @@
+doctrine:
+    dbal:
+        connections:
+            default:
+                dbname: '%env(resolve:MAIN_DB_NAME)%'
+                host: '%env(resolve:MAIN_DB_HOST)%'
+                port: '%env(resolve:MAIN_DB_PORT_CONTAINER)%'
+                user: '%env(resolve:MAIN_DB_USER)%'
+                password: '%env(resolve:MAIN_DB_PASSWORD)%'
+                driver: 'pdo_pgsql'
+                charset: utf8
+                server_version: '11'
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
