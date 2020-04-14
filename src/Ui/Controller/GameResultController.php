@@ -22,7 +22,8 @@ final class GameResultController extends AbstractController
         SerializerInterface $serializer
     ): Response {
         /** @var GetAllGameResultRequestDto $requestDto */
-        $requestDto = $this->mapQueryString($request, GetAllGameResultRequestDto::class);
+        $requestDto = $this->mapQueryString($request,
+            GetAllGameResultRequestDto::class);
         $result = $gameResultQuery->getAll(
             $requestDto->getOrderBy(),
             $requestDto->getOrderByType()

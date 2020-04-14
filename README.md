@@ -3,7 +3,7 @@
 docker-compose up -d
 docker exec -it scores-api_php_1 bash
 composer install
-bin/console do:mi:mi
+bin/console doctrine:mongodb:schema:create
 ```
 
 ## Synchronize date from api

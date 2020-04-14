@@ -5,7 +5,13 @@ RUN apt-get update \
     build-essential locales acl mailutils wget zip unzip \
     gnupg gnupg1 gnupg2 \
     libpq-dev
+
 RUN docker-php-ext-install pdo_pgsql
+
+RUN apt-get install -y libssl-dev \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
 COPY php.ini /etc/php/7.4/php.ini
 COPY php-fpm-pool.conf /etc/php/7.4/pool.d/www.conf
 

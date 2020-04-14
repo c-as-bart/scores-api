@@ -4,44 +4,44 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\GameResult;
 
-use App\Application\Dto\GameResultDto;
-use App\Application\Service\GameResultRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use JMS\Serializer\SerializerInterface;
+use App\Application\Service\GameResult\Dto\GameResultDto;
+use App\Application\Service\GameResult\GameResultRepositoryInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 final class GameResultRepository implements GameResultRepositoryInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var DocumentManager
      */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var SerializerInterface
-     */
-    private SerializerInterface $serializer;
+    private DocumentManager $documentManager;
 
     /**
      * GameResultRepository constructor.
+     *
+     * @param DocumentManager $documentManager
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        SerializerInterface $serializer
+        DocumentManager $documentManager
     ) {
-        $this->entityManager = $entityManager;
-        $this->serializer = $serializer;
+        $this->documentManager = $documentManager;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function save(GameResultDto $gameResult): void
     {
-        $json = $this->serializer->serialize($gameResult, 'json');
-        $connection = $this->entityManager->getConnection();
-        $connection->insert(
-            DatabaseConst::TABLE,
-            [
-                DatabaseConst::ID => $gameResult->getId(),
-                DatabaseConst::OBJECT => $json,
-            ]
-        );
+        $this->documentManager->persist($gameResult);
+        $this->documentManager->flush();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(string $id): ?GameResultDto
+    {
+        $documentRepository = $this->documentManager->getRepository(GameResultDto::class);
+
+        return $documentRepository->find($id);
     }
 }

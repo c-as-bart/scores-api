@@ -1,0 +1,10 @@
+<doctrine-mongo-mapping
+        xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping">
+    <document name="App\Application\Service\GameResult\Dto\GameResultDto">
+        <id strategy="none" type="string"/>
+        <embed-one field="user"
+                   target-document="App\Application\Service\GameResult\Dto\UserDto"/>
+        <field field-name="score" type="int"/>
+        <field field-name="finishedAt" type="date"/>
+    </document>
+</doctrine-mongo-mapping>

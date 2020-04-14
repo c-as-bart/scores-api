@@ -4,35 +4,26 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\GameResult;
 
-use App\Application\Dto\GameResultDto;
-use App\Application\Dto\GameResultFactoryInterface;
 use App\Application\Query\GameResultQueryInterface;
-use App\Infrastructure\GameResult\Exception\OrderByException;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Application\Service\GameResult\Dto\GameResultDto;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 final class GameResultQuery implements GameResultQueryInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var DocumentManager
      */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var GameResultFactoryInterface
-     */
-    private GameResultFactoryInterface $gameResultFactory;
+    private DocumentManager $documentManager;
 
     /**
      * GameResultQuery constructor.
      *
-     * @param EntityManagerInterface $entityManager
+     * @param DocumentManager $documentManager
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
-        GameResultFactoryInterface $gameResultFactory
+        DocumentManager $documentManager
     ) {
-        $this->entityManager = $entityManager;
-        $this->gameResultFactory = $gameResultFactory;
+        $this->documentManager = $documentManager;
     }
 
     /**
@@ -42,44 +33,14 @@ final class GameResultQuery implements GameResultQueryInterface
         ?string $orderBy,
         ?string $orderByType
     ): array {
-        if ($orderBy === null) {
-            $orderBy = 'finished_at';
-        }
+        $orderBy = isset($orderBy) ? $orderBy : 'scores';
+        $orderByType = isset($orderByType) ? $orderByType : 'DESC';
 
-        if ($orderByType === null) {
-            $orderByType = 'asc';
-        }
+        $result = $this->documentManager->createQueryBuilder(GameResultDto::class)
+            ->sort($orderBy, $orderByType)
+            ->getQuery()
+            ->execute();
 
-        $queryBuilder = $this->entityManager->getConnection()->createQueryBuilder();
-        $queryBuilder
-            ->select('*')
-            ->from('game_result')
-            ->orderBy(
-                $this->mapOrderBy($orderBy),
-                $orderByType
-            );
-
-        $queryResult = $queryBuilder->execute()->fetchAll();
-        $result = [];
-
-        foreach ($queryResult as $item) {
-            $result[] = $this->gameResultFactory->create(
-                json_decode($item[DatabaseConst::OBJECT], true)
-            );
-        }
-
-        return $result;
-    }
-
-    private function mapOrderBy(string $orderBy): string
-    {
-        switch ($orderBy) {
-            case 'score':
-               return "cast (object ->> 'score' as int)";
-            case 'finishedAt':
-                return "cast (object ->> 'finished_at' as timestamp)";
-            default:
-                throw new OrderByException($orderBy);
-        }
+        return $result->toArray();
     }
 }

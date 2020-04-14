@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Dto;
+namespace App\Application\Service\GameResult\Dto;
 
 use DateTime;
 
-final class GameResultDto
+class GameResultDto
 {
     /**
      * @var string
