@@ -25,10 +25,13 @@ abstract class AbstractController
         $this->serializer = $serializer;
     }
 
-    protected function mapQueryString(Request $request, string $requestDtoClassName): object
-    {
+    protected function mapQueryString(
+        Request $request,
+        string $requestDtoClassName
+    ): object {
         $params = json_encode($request->query->all());
 
-        return $this->serializer->deserialize($params, $requestDtoClassName, 'json');
+        return $this->serializer->deserialize($params, $requestDtoClassName,
+            'json');
     }
 }

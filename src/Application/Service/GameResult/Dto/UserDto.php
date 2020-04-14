@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Dto;
+namespace App\Application\Service\GameResult\Dto;
 
-final class UserDto
+class UserDto
 {
     /**
      * @var string

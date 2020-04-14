@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\GameResult;
 
-use App\Application\Dto\GameResultDto;
-use App\Application\Dto\UserDto;
-use App\Application\Dto\GameResultFactoryInterface;
+use App\Application\Service\GameResult\Dto\GameResultDto;
+use App\Application\Service\GameResult\Dto\UserDto;
+use App\Application\Service\GameResult\GameResultFactoryInterface;
 use DateTime;
 
 class GameResultFactory implements GameResultFactoryInterface
@@ -23,7 +23,8 @@ class GameResultFactory implements GameResultFactoryInterface
             $data[GameResultApiConst::ID],
             $user,
             $data[GameResultApiConst::SCORE],
-            DateTime::createFromFormat('Y-m-d\TH:i:sP', $data[GameResultApiConst::FINISHED_AT])
+            DateTime::createFromFormat('Y-m-d\TH:i:sP',
+                $data[GameResultApiConst::FINISHED_AT])
         );
     }
 }

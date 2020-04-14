@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\GameResult;
 
-use App\Application\Service\GameResultApiClientInterface;
-use App\Application\Dto\GameResultFactoryInterface;
+use App\Application\Service\GameResult\GameResultApiClientInterface;
+use App\Application\Service\GameResult\GameResultFactoryInterface;
 use App\Infrastructure\HttpClient\HttpClientInterface;
 
 final class GameResultApiClient implements GameResultApiClientInterface
@@ -25,7 +25,8 @@ final class GameResultApiClient implements GameResultApiClientInterface
     /**
      * GameResultApiClient constructor.
      *
-     * @param HttpClientInterface $httpClient
+     * @param HttpClientInterface        $httpClient
+     * @param GameResultFactoryInterface $gameResultFactory
      */
     public function __construct(
         HttpClientInterface $httpClient,
@@ -41,7 +42,7 @@ final class GameResultApiClient implements GameResultApiClientInterface
     public function getGameResult(int $id): array
     {
         $result = [];
-        $httpClientResult = $this->httpClient->get(self::RESOURCE_ADDRESS . '/' . (string) $id);
+        $httpClientResult = $this->httpClient->get(self::RESOURCE_ADDRESS . '/' . (string)$id);
 
         foreach ($httpClientResult as $gameResult) {
             $result[] = $this->gameResultFactory->create($gameResult);

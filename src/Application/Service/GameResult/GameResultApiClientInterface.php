@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Service;
+namespace App\Application\Service\GameResult;
 
-use App\Application\Dto\GameResultDto;
+use App\Application\Service\GameResult\Dto\GameResultDto;
 
 interface GameResultApiClientInterface
 {
